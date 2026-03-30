@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { loadSettings, saveSettings } from '../lib/storage';
 import type { UserSettings } from '../lib/storage';
-import { extractTextFromPDF } from '../lib/pdf';
+import { extractTextFromFile, convertPDFToImages } from '../lib/parser';
 import { Save, FileText, Settings as SettingsIcon } from 'lucide-react';
 
 export default function Options() {
   const [settings, setSettings] = useState<UserSettings | null>(null);
   const [saving, setSaving] = useState(false);
-  const [pdfLoading, setPdfLoading] = useState(false);
+  const [fileLoading, setFileLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -25,21 +25,48 @@ export default function Options() {
     const file = e.target.files?.[0];
     if (!file || !settings) return;
     
-    setPdfLoading(true);
+    setFileLoading(true);
     try {
-      const extractedText = await extractTextFromPDF(file);
-      const newContext = [
-        "--- resume extracted text ---", 
-        extractedText, 
-        "--- end resume ---", 
-        settings.userContext
-      ].join('\n\n');
-      setSettings({ ...settings, userContext: newContext });
+      // Also read file as Base64 for auto-uploading
+      const reader = new FileReader();
+      const base64Data = await new Promise<string>((resolve) => {
+        reader.onload = () => resolve(reader.result as string);
+        reader.readAsDataURL(file);
+      });
+
+      let extractedText = "";
+      let resumeImages: string[] | undefined = undefined;
+
+      if (file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")) {
+        // Skip text extraction for PDF, generate images instead for OpenAI
+        resumeImages = await convertPDFToImages(file);
+      } else {
+        extractedText = await extractTextFromFile(file);
+      }
+
+      let newContext = settings.userContext;
+      if (extractedText) {
+        newContext = [
+          "--- resume extracted text ---", 
+          extractedText, 
+          "--- end resume ---", 
+          settings.userContext
+        ].join('\n\n');
+      }
+
+      setSettings({ 
+        ...settings, 
+        userContext: newContext,
+        resumeFileData: base64Data,
+        resumeFileName: file.name,
+        resumeFileType: file.type,
+        ...(resumeImages && { resumeImages })
+      });
     } catch (error) {
-      console.error("Failed to parse PDF", error);
-      alert("Failed to parse PDF. Please ensure it is a valid text-based PDF.");
+      console.error("Failed to parse file", error);
+      alert(`Failed to parse ${file.name}. Please ensure it is a valid format.`);
     } finally {
-      setPdfLoading(false);
+      setFileLoading(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
@@ -87,13 +114,30 @@ export default function Options() {
         <section className="space-y-4">
           <h2 className="text-xl font-semibold text-gray-800 border-b pb-2">Your Context</h2>
           <p className="text-sm text-gray-600">
-            Provide your resume text and any additional context you want the AI to consider (e.g., preferred salary, location preferences).
+            Provide your basic details, resume, and any additional context. This ensures the AI has strong context.
           </p>
+
+          <div className="grid grid-cols-2 gap-4">
+            {['firstName', 'lastName', 'email', 'phone', 'linkedin', 'github', 'portfolio', 'yoe'].map((field) => (
+              <div key={field} className="space-y-1">
+                <label className="block text-sm font-medium text-gray-700 capitalize">
+                  {field.replace(/([A-Z])/g, ' $1').trim()}
+                </label>
+                <input
+                  type="text"
+                  className="w-full border-gray-300 rounded-md shadow-sm border p-2 focus:ring-blue-500 focus:border-blue-500"
+                  value={settings[field as keyof UserSettings] as string || ''}
+                  onChange={(e) => setSettings({ ...settings, [field]: e.target.value })}
+                  placeholder={`Your ${field}...`}
+                />
+              </div>
+            ))}
+          </div>
 
           <div className="bg-gray-50 p-6 rounded-lg border-2 border-dashed border-gray-300 text-center space-y-4 hover:bg-gray-100 transition">
             <input 
               type="file" 
-              accept="application/pdf"
+              accept=".pdf,.docx,.md,.markdown,.txt"
               className="hidden"
               ref={fileInputRef}
               onChange={handleFileUpload}
@@ -101,10 +145,10 @@ export default function Options() {
             <FileText className="w-12 h-12 text-gray-400 mx-auto" />
             <div className="text-gray-700">
               <span className="font-semibold cursor-pointer text-blue-600 hover:text-blue-800" onClick={() => fileInputRef.current?.click()}>
-                Upload a PDF Resume
+                Upload a Resume (PDF, DOCX, MD)
               </span> to auto-append to your context.
             </div>
-            {pdfLoading && <div className="text-sm text-blue-600 font-medium animate-pulse">Parsing PDF...</div>}
+            {fileLoading && <div className="text-sm text-blue-600 font-medium animate-pulse">Parsing file...</div>}
           </div>
 
           <div className="space-y-2">

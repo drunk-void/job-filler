@@ -31,7 +31,20 @@ export default function Panel() {
       });
 
       if (aiRes.error) throw new Error(aiRes.error);
-      if (aiRes.answers) setAnswers(aiRes.answers);
+      if (aiRes.answers) {
+        setAnswers(aiRes.answers);
+        // Auto-inject all single-string answers immediately
+        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        if (tab?.id) {
+          const singles: Record<string, string> = {};
+          for (const [id, val] of Object.entries(aiRes.answers)) {
+            if (typeof val === 'string') singles[id] = val;
+          }
+          if (Object.keys(singles).length > 0) {
+            chrome.tabs.sendMessage(tab.id, { type: 'FILL_ALL', data: singles });
+          }
+        }
+      }
 
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : "Failed to scan or process page.";

@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sample Job Application - Senior Software Engineer</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f3f4f6;
+            --card-bgColor: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border-color: #d1d5db;
+            --error-color: #ef4444;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.5;
+            margin: 0;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: var(--card-bgColor);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        h1 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.8rem;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .company-info {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .progress-container::before {
+            content: '';
+            background-color: var(--border-color);
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            height: 4px;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .progress-bar {
+            background-color: var(--primary-color);
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            height: 4px;
+            width: 0%;
+            z-index: 1;
+            transition: width 0.3s ease;
+        }
+
+        .step-indicator {
+            background-color: var(--card-bgColor);
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            z-index: 2;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+        }
+
+        .step-indicator.active {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .step-indicator.completed {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Form Sections */
+        .form-section {
+            display: none;
+            animation: fadeIn 0.4s;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .required {
+            color: var(--error-color);
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="url"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        input[type="url"]:focus,
+        input[type="number"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .radio-group, .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .radio-group.horizontal {
+            flex-direction: row;
+            gap: 1.5rem;
+        }
+
+        .radio-label, .checkbox-label {
+            display: flex;
+            align-items: center;
+            font-weight: normal;
+            cursor: pointer;
+        }
+
+        .radio-label input, .checkbox-label input {
+            margin-right: 0.5rem;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-prev {
+            background-color: var(--card-bgColor);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        .btn-prev:hover {
+            background-color: var(--bg-color);
+        }
+
+        .btn-next, .btn-submit {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-next:hover, .btn-submit:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .hidden {
+            visibility: hidden;
+        }
+        
+        .file-upload-help {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+        
+        .success-message {
+            text-align: center;
+            padding: 3rem 0;
+        }
+        
+        .success-message h2 {
+            color: #10b981;
+            font-size: 2rem;
+        }
+        
+        .success-message p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Senior Software Engineer Application</h1>
+        <div class="company-info">Acme Corp • San Francisco, CA (Remote available) • Full-Time</div>
+    </header>
+
+    <div id="form-container">
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+            <div class="step-indicator active">1</div>
+            <div class="step-indicator">2</div>
+            <div class="step-indicator">3</div>
+            <div class="step-indicator">4</div>
+            <div class="step-indicator">5</div>
+        </div>
+
+        <form id="job-application-form">
+            
+            <!-- STEP 1: Personal Information -->
+            <div class="form-section active" id="step1">
+                <h2>1. Personal Information</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name <span class="required">*</span></label>
+                        <input type="text" id="firstName" name="firstName" required autocomplete="given-name">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name <span class="required">*</span></label>
+                        <input type="text" id="lastName" name="lastName" required autocomplete="family-name">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">Email Address <span class="required">*</span></label>
+                        <input type="email" id="email" name="email" required autocomplete="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number <span class="required">*</span></label>
+                        <input type="tel" id="phone" name="phone" required autocomplete="tel">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Street Address</label>
+                    <input type="text" id="address" name="address" autocomplete="street-address">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group" style="flex: 2;">
+                        <label for="city">City <span class="required">*</span></label>
+                        <input type="text" id="city" name="city" required autocomplete="address-level2">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="state">State/Province <span class="required">*</span></label>
+                        <input type="text" id="state" name="state" required autocomplete="address-level1">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="zipCode">Zip/Postal Code <span class="required">*</span></label>
+                        <input type="text" id="zipCode" name="zipCode" required autocomplete="postal-code">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="country">Country <span class="required">*</span></label>
+                    <select id="country" name="country" required autocomplete="country">
+                        <option value="">Select a country...</option>
+                        <option value="US">United States</option>
+                        <option value="CA">Canada</option>
+                        <option value="UK">United Kingdom</option>
+                        <option value="AU">Australia</option>
+                        <option value="DE">Germany</option>
+                        <option value="IN">India</option>
+                        <option value="OTHER">Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- STEP 2: Documents & Links -->
+            <div class="form-section" id="step2">
+                <h2>2. Experience Profile</h2>
+                
+                <div class="form-group">
+                    <label for="resume">Upload Resume / CV <span class="required">*</span></label>
+                    <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx,.md" required>
+                    <div class="file-upload-help">Accepted formats: PDF, DOC, DOCX, MD (Max 5MB)</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="coverLetter">Cover Letter</label>
+                    <textarea id="coverLetter" name="coverLetter" placeholder="Write a brief cover letter or paste it here..."></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="linkedin">LinkedIn Profile Profile URL <span class="required">*</span></label>
+                        <input type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/yourprofile" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="github">GitHub / Portfolio URL</label>
+                        <input type="url" id="github" name="github" placeholder="https://github.com/yourusername">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="personalWebsite">Personal Website</label>
+                    <input type="url" id="personalWebsite" name="personalWebsite" placeholder="https://yourdomain.com">
+                </div>
+            </div>
+
+            <!-- STEP 3: Education & Experience -->
+            <div class="form-section" id="step3">
+                <h2>3. Education & Work History</h2>
+                
+                <div class="form-group">
+                    <label for="highestEducation">Highest Level of Education <span class="required">*</span></label>
+                    <select id="highestEducation" name="highestEducation" required>
+                        <option value="">Select level...</option>
+                        <option value="high_school">High School Diploma / GED</option>
+                        <option value="associate">Associate's Degree</option>
+                        <option value="bachelors">Bachelor's Degree</option>
+                        <option value="masters">Master's Degree</option>
+                        <option value="doctorate">Ph.D. or Doctorate</option>
+                        <option value="none">None of the above</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="university">University / Institution</label>
+                    <input type="text" id="university" name="university">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="yoe">Years of Professional Experience <span class="required">*</span></label>
+                        <input type="number" id="yoe" name="yoe" min="0" max="50" step="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="yoeReact">Years of React Experience <span class="required">*</span></label>
+                        <input type="number" id="yoeReact" name="yoeReact" min="0" max="20" step="1" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="currentCompany">Current/Most Recent Company</label>
+                        <input type="text" id="currentCompany" name="currentCompany">
+                    </div>
+                    <div class="form-group">
+                        <label for="currentTitle">Current/Most Recent Title</label>
+                        <input type="text" id="currentTitle" name="currentTitle">
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 4: Application Questions -->
+            <div class="form-section" id="step4">
+                <h2>4. Job-Specific Questions</h2>
+                
+                <div class="form-group">
+                    <label>Are you legally authorized to work in the country where this job is located? <span class="required">*</span></label>
+                    <div class="radio-group horizontal">
+                        <label class="radio-label">
+                            <input type="radio" name="authorizedToWork" value="yes" required> Yes
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="authorizedToWork" value="no"> No
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Will you now or in the future require sponsorship for employment visa status? <span class="required">*</span></label>
+                    <div class="radio-group horizontal">
+                        <label class="radio-label">
+                            <input type="radio" name="requireSponsorship" value="yes" required> Yes
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="requireSponsorship" value="no"> No
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Are you open to working in a hybrid environment (3 days a week in office)? <span class="required">*</span></label>
+                    <div class="radio-group horizontal">
+                        <label class="radio-label">
+                            <input type="radio" name="hybridOpen" value="yes" required> Yes
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="hybridOpen" value="no"> No
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="hybridOpen" value="remote_only"> I am looking for fully remote only
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="salary">Desired Salary Range (USD) <span class="required">*</span></label>
+                    <select id="salary" name="salary" required>
+                        <option value="">Select range...</option>
+                        <option value="120-140">£120,000 - £140,000</option>
+                        <option value="140-160">£140,000 - £160,000</option>
+                        <option value="160-180">£160,000 - £180,000</option>
+                        <option value="180-200">£180,000 - £200,000</option>
+                        <option value="200+">£200,000+</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="noticePeriod">What is your notice period / available state date? <span class="required">*</span></label>
+                    <input type="text" id="noticePeriod" name="noticePeriod" placeholder="e.g. 2 weeks, Immediately, 1 month" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="howDidYouHear">How did you hear about this role?</label>
+                    <select id="howDidYouHear" name="howDidYouHear">
+                        <option value="">Select...</option>
+                        <option value="linkedin">LinkedIn</option>
+                        <option value="google">Google/Search Engine</option>
+                        <option value="referral">Employee Referral</option>
+                        <option value="jobboard">Job Board (Indeed, Glassdoor, etc)</option>
+                        <option value="company_website">Company Website</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="whyRole">Why are you interested in this role at Acme Corp? <span class="required">*</span></label>
+                    <textarea id="whyRole" name="whyRole" placeholder="Tell us what excites you about this opportunity..." required></textarea>
+                </div>
+            </div>
+
+            <!-- STEP 5: Diversity & Consent -->
+            <div class="form-section" id="step5">
+                <h2>5. Equal Opportunity Survey</h2>
+                <p class="company-info" style="margin-bottom: 1.5rem;">
+                    We are an equal opportunity employer. This information is voluntary, anonymous, and will not be used in the hiring decision.
+                </p>
+
+                <div class="form-group">
+                    <label for="gender">Gender Identity</label>
+                    <select id="gender" name="gender">
+                        <option value="">Select...</option>
+                        <option value="man">Male</option>
+                        <option value="woman">Female</option>
+                        <option value="nonbinary">Non-binary / Third gender</option>
+                        <option value="self_describe">Prefer to self-describe</option>
+                        <option value="decline">Decline to state</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="veteran">Veteran Status</label>
+                    <select id="veteran" name="veteran">
+                        <option value="">Select...</option>
+                        <option value="not_veteran">I am not a protected veteran</option>
+                        <option value="veteran">I identify as one or more of the classifications of a protected veteran</option>
+                        <option value="decline">Decline to state</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="disability">Disability Status</label>
+                    <select id="disability" name="disability">
+                        <option value="">Select...</option>
+                        <option value="no_disability">No, I do not have a disability</option>
+                        <option value="disability">Yes, I have a disability (or previously had a disability)</option>
+                        <option value="decline">Decline to state</option>
+                    </select>
+                </div>
+
+                <hr style="margin: 2rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="certifyTruth" required>
+                        <span>I certify that the information provided in this application is true and complete to the best of my knowledge. <span class="required">*</span></span>
+                    </label>
+                </div>
+                
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="privacyPolicy" required>
+                        <span>I agree to the <a href="#">Applicant Privacy Policy</a> and consent to the processing of my personal data. <span class="required">*</span></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="button-group">
+                <button type="button" class="btn-prev hidden" id="btn-prev" onclick="changeStep(-1)">Back</button>
+                <div style="flex-grow: 1;"></div>
+                <button type="button" class="btn-next" id="btn-next" onclick="changeStep(1)">Next Step</button>
+                <button type="submit" class="btn-submit hidden" id="btn-submit">Submit Application</button>
+            </div>
+        </form>
+    </div>
+    
+    <div id="success-container" style="display: none;">
+        <div class="success-header" style="text-align:center; padding: 2rem 0 1.5rem;">
+            <div style="font-size:3rem;">✅</div>
+            <h2 style="color: #10b981; font-size: 1.8rem; margin: 0.5rem 0;">Application Submitted!</h2>
+            <p style="color: var(--text-muted); margin: 0;">Here is a full summary of everything that was submitted.</p>
+        </div>
+
+        <div id="submission-summary" style="margin-top: 1rem;"></div>
+
+        <div style="text-align:center; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); display: flex; gap: 1rem; justify-content: center;">
+            <a id="resume-download-link" style="display:none; padding: 0.75rem 1.5rem; background: #10b981; color: white; border-radius: 4px; text-decoration: none; font-weight: 500;">⬇ Download Submitted Resume</a>
+            <button onclick="location.reload()" style="padding: 0.75rem 1.5rem; background: var(--card-bgColor); border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer; font-size: 1rem;">Submit Another Application</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentStep = 1;
+    const totalSteps = 5;
+
+    // Initialize UI
+    updateUI();
+
+    function changeStep(direction) {
+        // Validate before moving to next step
+        if (direction === 1) {
+            const currentSection = document.getElementById('step' + currentStep);
+            const requiredInputs = currentSection.querySelectorAll('[required]');
+            let isValid = true;
+            
+            // Very simple validation check
+            requiredInputs.forEach(input => {
+                if (!input.checkValidity()) {
+                    input.reportValidity();
+                    isValid = false;
+                }
+            });
+            
+            if (!isValid) return;
+        }
+
+        // Hide current step
+        document.getElementById('step' + currentStep).classList.remove('active');
+        
+        // Update step index
+        currentStep += direction;
+        
+        // Show new step
+        document.getElementById('step' + currentStep).classList.add('active');
+        
+        // Update UI elements
+        updateUI();
+    }
+
+    function updateUI() {
+        // Update buttons
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        const btnSubmit = document.getElementById('btn-submit');
+        
+        if (currentStep === 1) {
+            btnPrev.classList.add('hidden');
+        } else {
+            btnPrev.classList.remove('hidden');
+        }
+        
+        if (currentStep === totalSteps) {
+            btnNext.classList.add('hidden');
+            btnSubmit.classList.remove('hidden');
+        } else {
+            btnNext.classList.remove('hidden');
+            btnSubmit.classList.add('hidden');
+        }
+        
+        // Update progress bar
+        const progressPercentage = ((currentStep - 1) / (totalSteps - 1)) * 100;
+        document.getElementById('progress-bar').style.width = progressPercentage + '%';
+        
+        // Update step indicators
+        const indicators = document.querySelectorAll('.step-indicator');
+        indicators.forEach((indicator, index) => {
+            const stepNum = index + 1;
+            
+            indicator.classList.remove('active', 'completed');
+            
+            if (stepNum < currentStep) {
+                indicator.classList.add('completed');
+                indicator.innerHTML = '✓';
+            } else if (stepNum === currentStep) {
+                indicator.classList.add('active');
+                indicator.innerHTML = stepNum;
+            } else {
+                indicator.innerHTML = stepNum;
+            }
+        });
+        
+        // Scroll to top of form
+        document.querySelector('.container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Handle form submission
+    document.getElementById('job-application-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        
+        // Build the summary table
+        const fieldLabels = {
+            firstName: 'First Name', lastName: 'Last Name', email: 'Email', phone: 'Phone',
+            address: 'Street Address', city: 'City', state: 'State', zipCode: 'Zip Code',
+            country: 'Country', coverLetter: 'Cover Letter', linkedin: 'LinkedIn URL',
+            github: 'GitHub / Portfolio URL', personalWebsite: 'Personal Website',
+            highestEducation: 'Highest Education', university: 'University',
+            yoe: 'Years of Experience', yoeReact: 'Years of React Experience',
+            currentCompany: 'Current Company', currentTitle: 'Current Title',
+            authorizedToWork: 'Authorized to Work', requireSponsorship: 'Requires Sponsorship',
+            hybridOpen: 'Open to Hybrid', salary: 'Desired Salary', noticePeriod: 'Notice Period',
+            howDidYouHear: 'How You Heard', whyRole: 'Why This Role',
+            gender: 'Gender Identity', veteran: 'Veteran Status', disability: 'Disability Status',
+            certifyTruth: 'Certifies Truth', privacyPolicy: 'Agreed to Privacy Policy',
+            resume: 'Resume / CV'
+        };
+        
+        let html = '<table style="width:100%; border-collapse: collapse; font-size: 0.95rem;">';
+        html += '<thead><tr style="background:#f3f4f6;"><th style="padding:0.7rem 1rem;text-align:left;border-bottom:2px solid #d1d5db;">Field</th><th style="padding:0.7rem 1rem;text-align:left;border-bottom:2px solid #d1d5db;">Value</th></tr></thead><tbody>';
+        
+        let rowIndex = 0;
+        const checkboxFields = ['certifyTruth', 'privacyPolicy'];
+        const allFields = Object.keys(fieldLabels);
+        
+        allFields.forEach(key => {
+            if (key === 'resume') return; // Handle separately
+            let value = '';
+            if (checkboxFields.includes(key)) {
+                const el = document.querySelector(`[name="${key}"]`);
+                value = el && el.checked ? '✅ Yes' : '❌ No';
+            } else {
+                value = formData.get(key) || '';
+            }
+            const label = fieldLabels[key] || key;
+            const bg = rowIndex % 2 === 0 ? '#ffffff' : '#f9fafb';
+            const displayValue = value ? `<span style="color:#1f2937">${value}</span>` : `<span style="color:#9ca3af;font-style:italic">Not provided</span>`;
+            html += `<tr style="background:${bg};"><td style="padding:0.6rem 1rem;border-bottom:1px solid #e5e7eb;font-weight:500;color:#374151;">${label}</td><td style="padding:0.6rem 1rem;border-bottom:1px solid #e5e7eb;">${displayValue}</td></tr>`;
+            rowIndex++;
+        });
+        
+        html += '</tbody></table>';
+        document.getElementById('submission-summary').innerHTML = html;
+        
+        // Handle resume file download
+        const resumeFile = formData.get('resume');
+        if (resumeFile && resumeFile.size > 0) {
+            const url = URL.createObjectURL(resumeFile);
+            const link = document.getElementById('resume-download-link');
+            link.href = url;
+            link.download = resumeFile.name;
+            link.textContent = `⬇ Download Submitted Resume (${resumeFile.name})`;
+            link.style.display = 'inline-block';
+        }
+        
+        console.log('Application Submitted via FormData');
+        
+        // Show success page
+        document.getElementById('form-container').style.display = 'none';
+        document.getElementById('success-container').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+</script>
+
+</body>
+</html>

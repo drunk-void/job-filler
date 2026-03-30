@@ -2,7 +2,12 @@
 import { generateAnswers } from '../lib/ai';
 import { loadSettings } from '../lib/storage';
 
-chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }).catch((error: unknown) => console.error(error));
+// Always use the injected sidebar for consistent per-page state
+chrome.action.onClicked.addListener((tab) => {
+  if (tab.id) {
+    chrome.tabs.sendMessage(tab.id, { type: 'TOGGLE_SIDEBAR' });
+  }
+});
 
 chrome.runtime.onInstalled.addListener(() => {
   console.log("Job Filler Extension installed");

@@ -17,9 +17,6 @@ export default defineConfig({
           action: {
             default_title: "Open Side Panel"
           },
-          side_panel: {
-            default_path: "src/panel/index.html"
-          },
           options_ui: {
             page: "src/options/index.html",
             open_in_tab: true
@@ -34,11 +31,17 @@ export default defineConfig({
               js: ["src/content/index.tsx"]
             }
           ],
-          permissions: ["activeTab", "storage", "sidePanel", "scripting"],
+          permissions: ["activeTab", "storage", "scripting", "unlimitedStorage"],
           host_permissions: [
             "https://api.openai.com/*", 
             "https://api.anthropic.com/*", 
             "https://generativelanguage.googleapis.com/*"
+          ],
+          web_accessible_resources: [
+            {
+              resources: ["src/panel/index.html", "assets/*", "*.js", "*.css"],
+              matches: ["<all_urls>"]
+            }
           ]
         };
       }

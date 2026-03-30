@@ -47,19 +47,40 @@ Since this is an open-source extension, you will need to build it and load it in
 
 Chromium browsers can load the extension directly without a conversion step.
 
-1. **Build:**
-   ```bash
-   git clone git@github.com:drunk-void/job-filler.git
-   cd job-filler
-   npm install
-   npm run build
-   ```
-2. **Load Unpacked:**
-   - Open your browser and navigate to `chrome://extensions` (or `edge://extensions` for Edge).
-   - Enable **Developer Mode** (usually a toggle in the top right).
-   - Click **Load unpacked**.
-   - Select the `dist` folder inside the `job-filler` directory.
-3. **Pin it:** Click the puzzle icon in your toolbar and pin **Job Auto-Filler** for easy access to the Side Panel!
+3. **Build & Load:**
+   - **Quick Start:** Run `./build.sh` in your terminal.
+   - Or manually: `npm install` and `npm run build`.
+   - Open your browser and navigate to `chrome://extensions` (or `edge://extensions`).
+   - Enable **Developer Mode**.
+   - Click **Load unpacked** and select the `dist` folder.
+4. **Pin it:** Click the puzzle icon in your toolbar and pin **Job Auto-Filler** for easy access!
+
+---
+
+## 📦 Building & Packaging
+
+For developers and maintainers, we provide helper scripts to streamline the process:
+
+### 🛠️ Build Script (`./build.sh`)
+Automates dependency installation and builds the extension for all browsers.
+- **Chrome/Edge/Firefox:** Generates the `dist` folder.
+- **Safari:** Ensures the source is latest for your Xcode project.
+```bash
+./build.sh
+```
+
+### 🎁 Packaging Script (`./package.sh`)
+Packages the extension for distribution.
+- **Chrome/Edge/Firefox:** Creates a ZIP of the `dist` folder for store uploads or sharing.
+- **Safari:** Creates a source package of the `JobFillerSafari` Xcode project.
+```bash
+./package.sh
+```
+
+> [!NOTE]
+> Safari extensions are distributed as native macOS apps. For final distribution, open the `JobFillerSafari` project in Xcode and use the **Product > Archive** menu for App Store submission or signed DMG distribution.
+
+---
 
 ---
 
@@ -86,6 +107,8 @@ Navigate to any job application page (LinkedIn, Greenhouse, Lever, etc.), open t
 ---
 
 ## 🤝 Contributing
+
+**This is an ongoing project!** The web is full of countless variations of form fields, dropdowns, and checkboxes. If you encounter a specific kind of form or field that the extension struggles to extract or fill correctly, your feedback and suggestions are highly encouraged! Please open an issue with an example of the discrepancy or submit a pull request.
 
 Contributions are welcome! If you find a bug or have a feature suggestion, please open an issue or submit a pull request.
 
