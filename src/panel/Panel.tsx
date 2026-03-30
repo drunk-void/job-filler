@@ -33,8 +33,9 @@ export default function Panel() {
       if (aiRes.error) throw new Error(aiRes.error);
       if (aiRes.answers) setAnswers(aiRes.answers);
 
-    } catch (err: any) {
-      setError(err.message || "Failed to scan or process page.");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to scan or process page.";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

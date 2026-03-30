@@ -17,8 +17,9 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
         
         const answers = await generateAnswers(request.fields, settings);
         sendResponse({ answers });
-      } catch (error: any) {
-        sendResponse({ error: error.message || String(error) });
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        sendResponse({ error: errorMessage });
       }
     })();
     return true; // indicates asynchronous response
