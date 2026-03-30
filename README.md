@@ -4,6 +4,8 @@ Stop spending hours manually filling out repetitive job applications. **AI Job A
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Safari](https://img.shields.io/badge/browser-Safari-orange.svg)
+![Chrome](https://img.shields.io/badge/browser-Chrome-blue.svg)
+![Edge](https://img.shields.io/badge/browser-Edge-lightblue.svg)
 
 ---
 
@@ -12,40 +14,54 @@ Stop spending hours manually filling out repetitive job applications. **AI Job A
 - **🧠 Multi-Model Support:** Choose your preferred AI provider: **Google Gemini**, **OpenAI (GPT-4o)**, or **Anthropic Claude**.
 - **📄 PDF Resume Parsing:** Simply drag and drop your PDF resume, and the extension extracts all relevant text locally to build your AI context.
 - **🛡️ Privacy First:** Your data and API keys are stored locally in your browser's sandboxed storage. No external servers track your applications.
-- **sidebar Native Experience:** A sleek, integrated Safari Sidebar that lets you review AI-generated suggestions before they are injected into the page.
-- **✨ subjective Question Drafts:** For open-ended questions, the AI provides 2-3 tailored options that you can instantly "inject" into the form with one click.
+- **🖥️ Native Sidebar:** A sleek, integrated Browser Sidebar that lets you review AI-generated suggestions before they are injected into the page.
+- **✨ Subjective Question Drafts:** For open-ended questions, the AI provides 2-3 tailored options that you can instantly "inject" into the form with one click.
 
 ---
 
-## 🛠️ Installation (For Safari)
+## 🛠️ Installation
+
+### Option A: For Safari (macOS)
 
 Since this is an open-source extension, you will need to build it and load it into Safari using Xcode.
 
-### 1. Prerequisites
-- **macOS** with **Xcode** installed.
-- **Node.js** (v18+) and **npm**.
+1. **Prerequisites:** macOS with **Xcode** installed, **Node.js** (v18+) and **npm**.
+2. **Build:**
+   ```bash
+   git clone git@github.com:drunk-void/job-filler.git
+   cd job-filler
+   npm install
+   npm run build
+   ```
+3. **Convert:**
+   ```bash
+   xcrun safari-web-extension-converter ./dist --project-location ./safari-build --app-name "Job Auto-Filler"
+   ```
+4. **Enable:**
+   - Xcode will open the project. Click **Run** to launch the app.
+   - In Safari, enable **"Show features for web developers"** in Settings > Advanced.
+   - In the **Develop** menu, check **"Allow Unsigned Extensions"**.
+   - Enable **Job Auto-Filler** in Settings > Extensions.
 
-### 2. Build the Extension
-Clone the repository and install dependencies:
-```bash
-git clone git@github.com:drunk-void/job-filler.git
-cd job-filler
-npm install
-npm run build
-```
+### Option B: For Chrome/Chromium (Chrome, Brave, Edge, Arc)
 
-### 3. Convert for Safari
-Use Apple's utility to convert the web bundle into a macOS app container:
-```bash
-xcrun safari-web-extension-converter ./dist --project-location ./safari-build --app-name "Job Auto-Filler"
-```
+Chromium browsers can load the extension directly without a conversion step.
 
-### 4. Enable in Safari
-1. Xcode will open the generated project. Click the **Run** button (Play icon) to launch the app.
-2. Open **Safari**.
-3. Go to **Settings > Advanced** and check **"Show features for web developers"**.
-4. In the **Develop** menu, check **"Allow Unsigned Extensions"**.
-5. Go to **Settings > Extensions** and enable **Job Auto-Filler**.
+1. **Build:**
+   ```bash
+   git clone git@github.com:drunk-void/job-filler.git
+   cd job-filler
+   npm install
+   npm run build
+   ```
+2. **Load Unpacked:**
+   - Open your browser and navigate to `chrome://extensions` (or `edge://extensions` for Edge).
+   - Enable **Developer Mode** (usually a toggle in the top right).
+   - Click **Load unpacked**.
+   - Select the `dist` folder inside the `job-filler` directory.
+3. **Pin it:** Click the puzzle icon in your toolbar and pin **Job Auto-Filler** for easy access to the Side Panel!
+
+---
 
 ---
 
